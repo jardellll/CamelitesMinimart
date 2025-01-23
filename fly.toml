@@ -1,17 +1,14 @@
 app = "camelitesminimart"
-
 kill_signal = "SIGINT"
 kill_timeout = 5
 
 [env]
-  SPRING_PROFILES_ACTIVE = "prod"
-  PORT = "8080" # Fly.io sets the port dynamically but defaults to 8080
-  DATABASE_URL = "jdbc:postgresql://your-production-db-url"
-  DB_USERNAME = "your_prod_username"
-  DB_PASSWORD = "your_prod_password"
+SPRING_PROFILES_ACTIVE = "prod"
 
-[build]
-  builder = "paketobuildpacks/builder:base"
+[[services]]
+internal_port = 8080
+protocol = "tcp"
 
-[deploy]
-  strategy = "rolling"
+  [services.ports]
+  http = 80
+  https = 443
