@@ -4,8 +4,11 @@ kill_timeout = 5
 
 [env]
 SPRING_PROFILES_ACTIVE = "prod"
+PORT="8080"
+SERVER_ADDRESS="0.0.0.0"
 [build]
   builder = "paketobuildpacks/builder:base"
+  command = "java -jar your-app.jar"
 
 [experimental]
   auto_rollback = true 
