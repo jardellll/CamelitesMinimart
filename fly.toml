@@ -8,7 +8,7 @@ PORT="8080"
 SERVER_ADDRESS="0.0.0.0"
 [build]
   builder = "paketobuildpacks/builder:base"
-  command = "java -jar your-app.jar"
+  command = "java -jar CamelitesMinimart.jar"
 
 [experimental]
   auto_rollback = true 
