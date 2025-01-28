@@ -1,0 +1,93 @@
+# flyctl launch added from .gitignore
+**/HELP.md
+**/target
+!**/.mvn/wrapper/maven-wrapper.jar
+!**/**/src/main/**/target
+!**/**/src/test/**/target
+
+### STS ###
+**/.apt_generated
+**/.classpath
+**/.factorypath
+**/.project
+**/.settings
+**/.springBeans
+**/.sts4-cache
+
+### IntelliJ IDEA ###
+**/.idea
+**/*.iws
+**/*.iml
+**/*.ipr
+
+### NetBeans ###
+nbproject/private
+nbbuild
+dist
+nbdist
+.nb-gradle
+**/build
+!**/**/src/main/**/build
+!**/**/src/test/**/build
+
+### VS Code ###
+**/.vscode
+
+# flyctl launch added from .idea/.gitignore
+# Default ignored files
+.idea/shelf
+.idea/workspace.xml
+
+# flyctl launch added from spring-petclinic/.gitignore
+spring-petclinic/**/HELP.md
+spring-petclinic/**/pom.xml.bak
+spring-petclinic/**/target
+!spring-petclinic/**/.mvn/wrapper/maven-wrapper.jar
+!spring-petclinic/**/**/src/main/**/target
+!spring-petclinic/**/**/src/test/**/target
+spring-petclinic/**/.gradle
+spring-petclinic/**/build
+!spring-petclinic/**/gradle/wrapper/gradle-wrapper.jar
+!spring-petclinic/**/**/src/main/**/build
+!spring-petclinic/**/**/src/test/**/build
+
+### STS ###
+spring-petclinic/**/.attach_pid*
+spring-petclinic/**/.apt_generated
+spring-petclinic/**/.classpath
+spring-petclinic/**/.factorypath
+spring-petclinic/**/.project
+spring-petclinic/**/.settings
+spring-petclinic/**/.springBeans
+spring-petclinic/**/.sts4-cache
+spring-petclinic/**/bin
+!spring-petclinic/**/**/src/main/**/bin
+!spring-petclinic/**/**/src/test/**/bin
+
+### IntelliJ IDEA ###
+spring-petclinic/**/.idea
+spring-petclinic/**/*.iws
+spring-petclinic/**/*.iml
+spring-petclinic/**/*.ipr
+spring-petclinic/**/out
+!spring-petclinic/**/**/src/main/**/out
+!spring-petclinic/**/**/src/test/**/out
+
+### NetBeans ###
+spring-petclinic/nbproject/private
+spring-petclinic/nbbuild
+spring-petclinic/dist
+spring-petclinic/nbdist
+spring-petclinic/.nb-gradle
+
+### VS Code ###
+spring-petclinic/**/.vscode
+
+### SDK Man ###
+spring-petclinic/**/.sdkmanrc
+
+### CSS ###
+spring-petclinic/**/_site
+spring-petclinic/**/*.css
+!spring-petclinic/**/petclinic.css
+fly.toml
