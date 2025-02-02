@@ -335,10 +335,11 @@ async function addStock(product_id, stockQuantity) {
 }
 
 document.addEventListener("DOMContentLoaded", ()=>{
-    const isAuthenticated = sessionStorage.getItem("isAuthenticated");
-    if(isAuthenticated !== "true"){
-        window.location.href = "/user/"
-    }
+        const isAuthenticated = sessionStorage.getItem("isAuthenticated");
+    
+        if (isAuthenticated !== "true" && !window.location.pathname.startsWith("/user/")) {
+            window.location.href = "/user/";
+        }
 });
 
 document.addEventListener("DOMContentLoaded", () => {
