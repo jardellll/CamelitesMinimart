@@ -7,7 +7,7 @@ let password = document.getElementById("password")
 let change = 0.00
 let authenticated = false;
 // document.getElementById("newCart").addEventListener("click", function () {
-//   fetch("http://localhost:8082/cart/newCart", {
+//   fetch("${BASE_URL}/cart/newCart", {
 //     method: "POST",
 //     headers: {
 //       "Content-Type": "application/json",
@@ -24,12 +24,12 @@ let authenticated = false;
 //       alert("Error creating cart");
 //     });
 // });
-
+const BASE_URL = window.location.origin;
 async function addToCart(product_id, quantityId) {
     const quantityElement = document.getElementById(quantityId);
     const quantity = quantityElement.value;
     if (activeCart === false) {
-        await fetch("http://localhost:8082/cart/newCart", {
+        await fetch("${BASE_URL}/cart/newCart", {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
@@ -60,7 +60,7 @@ async function addToCart(product_id, quantityId) {
         console.log(product_id);
         console.log(quantity);
         console.log(cartId);
-        const response = await fetch("http://localhost:8082/cartItems/addItem", {
+        const response = await fetch("${BASE_URL}/cartItems/addItem", {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
@@ -83,7 +83,7 @@ async function addToCart(product_id, quantityId) {
 async function getCartItems() {
     try {
         const response = await fetch(
-            "http://localhost:8082/cartItems/listCartItems/" + cartId,
+            "${BASE_URL}/cartItems/listCartItems/" + cartId,
             {
                 method: "POST",
                 headers: {
@@ -108,7 +108,7 @@ async function getCartItems() {
             let productPrice = "";
             try {
                 const productResponse = await fetch(
-                    "http://localhost:8082/products/" + productId,
+                    "${BASE_URL}/products/" + productId,
                     {
                         method: "Get",
                         headers: {
@@ -142,7 +142,7 @@ async function getCartItems() {
         }
         try {
             const checkoutResponse = await fetch(
-                "http://localhost:8082/cartItems/checkout/" + cartId,
+                "${BASE_URL}/cartItems/checkout/" + cartId,
                 {
                     method: "POST",
                     headers: {
@@ -183,7 +183,7 @@ async function getCartItems() {
 async function completeSale(){
     try {
         const saleResponse = await fetch(
-            "http://localhost:8082/sale/completeSale/" + cartId+"/"+cash.value,
+            "${BASE_URL}/sale/completeSale/" + cartId+"/"+cash.value,
             {
                 method: "POST",
                 headers: {
@@ -218,7 +218,7 @@ async function login(event){
     };
     console.log(JSON.stringify(loginDetails));
     try {
-        const loginResponse = await fetch("http://localhost:8082/user/login", {
+        const loginResponse = await fetch("${BASE_URL}/user/login", {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
@@ -267,7 +267,7 @@ async function newProduct() {
     };
 
     try {
-        const newProductResponse = await fetch("http://localhost:8082/products/newProduct", {
+        const newProductResponse = await fetch("${BASE_URL}/products/newProduct", {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
@@ -305,7 +305,7 @@ async function addStock(product_id, stockQuantity) {
     console.log(product_id);
 
     try {
-        const addStockResponse = await fetch("http://localhost:8082/stock/addStock/"+product_id+"/"+quantity, {
+        const addStockResponse = await fetch("${BASE_URL}/stock/addStock/"+product_id+"/"+quantity, {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
