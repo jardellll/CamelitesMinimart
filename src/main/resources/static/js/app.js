@@ -346,9 +346,15 @@ document.addEventListener("DOMContentLoaded", () => {
     const changeScreenModal = document.getElementById("changeScreen");
 
     if (changeScreenModal) {
-        changeScreenModal.addEventListener("hidden.bs.modal", () => {
-            // Reload the page
-            location.reload();
+        // Listen for when the modal is shown
+        changeScreenModal.addEventListener("shown.bs.modal", () => {
+            console.log("Modal is now visible. Adding event listener for hidden event.");
+            
+            // Add the event listener when the modal is shown
+            changeScreenModal.addEventListener("hidden.bs.modal", () => {
+                console.log("Modal hidden, reloading page...");
+                location.reload();
+            }, { once: true }); // `{ once: true }` ensures this runs only once per modal display
         });
     }
 });
