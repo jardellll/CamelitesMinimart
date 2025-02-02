@@ -345,10 +345,12 @@ document.addEventListener("DOMContentLoaded", ()=>{
 document.addEventListener("DOMContentLoaded", () => {
     const changeScreenModal = document.getElementById("changeScreen");
 
-    changeScreenModal.addEventListener("hidden.bs.modal", () => {
-        // Reload the page
-        location.reload();
-    });
+    if (changeScreenModal) {
+        changeScreenModal.addEventListener("hidden.bs.modal", () => {
+            // Reload the page
+            location.reload();
+        });
+    }
 });
 
 function filterProducts() {
