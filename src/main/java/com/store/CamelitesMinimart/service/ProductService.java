@@ -1,6 +1,7 @@
 package com.store.CamelitesMinimart.service;
 
 import org.springframework.context.annotation.Lazy;
+import org.springframework.data.domain.Example;
 import org.springframework.stereotype.Service;
 
 import com.store.CamelitesMinimart.NewProductRequest;
@@ -33,6 +34,21 @@ public class ProductService {
 
     public Product getProductById(Long id){
         Optional<Product> optionalProduct = productRepo.findById(id);
+        if (optionalProduct.isPresent()){
+            return optionalProduct.get();
+        }
+        return null;
+    }
+
+    public Product getProductByBarcode(String barcode){
+
+
+        // Product exampleProduct = new Product();
+        // exampleProduct.setBarcode(barcode);
+
+        // Example <Product> example = Example.of(exampleProduct);
+
+        Optional<Product> optionalProduct = productRepo.findByBarcode(barcode);
         if (optionalProduct.isPresent()){
             return optionalProduct.get();
         }

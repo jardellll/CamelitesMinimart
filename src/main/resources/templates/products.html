@@ -19,6 +19,11 @@
       </ul>
     <div class="container">
         <div class="row">
+            <div class="col-8 d-flex flex-column">
+                <input type="text" class="form-control mb-3" id="barcodeSearch" placeholder="Scan barcode..." onkeyup="addToCartWBarcode(this.value)">
+            </div>
+        </div>
+        <div class="row">
             <div class="col-8 d-flex flex-column" style="height: 100vh;">
                 <h1 class="text-center my-4">Full List of Products</h1>
                 <input type="text" class="form-control mb-3" id="productSearch" placeholder="Search products..." onkeyup="filterProducts()">
@@ -37,6 +42,7 @@
                                     <option>4</option>
                                     <option>5</option>
                                 </select>
+                                <!-- <input type="number" id="quantityInput" class="form-control" min="1" placeholder="Enter quantity" onkeydown="event.stopPropagation();"> -->
                             </div>
                             <button type="button" class="btn btn-primary"
                                 th:attr="data-product-id=${item.id}, data-quantity-id='quantity-' + ${item.id}"

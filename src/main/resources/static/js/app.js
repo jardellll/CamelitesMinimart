@@ -79,6 +79,101 @@ async function addToCart(product_id, quantityId) {
         console.error(error);
     }
 }
+const barcodeQuantityMap = {};
+async function addToCartWBarcode(barcode) {
+    if (!barcode.trim()) return;
+    // const quantityElement = document.getElementById(quantityId);
+    // const quantity = quantityElement.value;
+
+    if (barcodeQuantityMap[barcode]) {
+        barcodeQuantityMap[barcode] += 1;
+    } else {
+        barcodeQuantityMap[barcode] = 1;
+    }
+
+    if (activeCart === false) {
+        await fetch(`${BASE_URL}/cart/newCart`, {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+            },
+        })
+            .then(async (response) => await response.json())
+            .then((data) => {
+                console.log("Success:", data);
+                cartId = data.cart_id;
+                alert("new cart created");
+                activeCart = true;
+            })
+            .catch((error) => {
+                console.error("Error:", error);
+                alert("Error creating cart");
+            });
+    }
+
+    //, cartId) {
+    //console.log(product_id);
+    // console.log(quantity);
+    const dataOut = {
+        barcode: barcode,
+        quantity: barcodeQuantityMap[barcode],
+        cart_id: cartId,
+    };
+    try {
+        console.log(barcode);
+        //console.log(quantity);
+        console.log(cartId);
+        const response = await fetch(`${BASE_URL}/cartItems/addItem/barcode`, {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify(dataOut),
+        });
+
+        if (!response.ok) {
+            throw new Error("could not fetch");
+        }
+        console.log("Success:", response);
+        const data = await response.json();
+        document.getElementById("barcodeSearch").value = "";
+        
+        document.getElementById("barcodeSearch").focus();
+
+        getCartItems();
+    } catch (error) {
+        console.error(error);
+    }
+}
+async function removeFromCart(product_id, cartId) {
+    //const quantityElement = document.getElementById(quantityId);
+    const dataOut = {
+        cart_id: cartId,
+        product_id: product_id,
+    };
+    try {
+        console.log(product_id);
+        console.log(cartId);
+        const response = await fetch(`${BASE_URL}/cartItems/removeItem`, {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify(dataOut),
+        });
+
+        if (!response.ok) {
+            throw new Error("could not fetch");
+        }
+        console.log("Success:", response);
+        // const data = await response.json();
+        
+
+        getCartItems();
+    } catch (error) {
+        console.error(error);
+    }
+}
 
 async function getCartItems() {
     try {
@@ -133,10 +228,41 @@ async function getCartItems() {
             rowDiv.classList.add("row", "mb-2");
 
             rowDiv.innerHTML = `
-        <div class="col-4">${productName}</div>
-        <div class="col-4">Price: $${productPrice}</div>
-        <div class="col-4">Quantity: ${item.quantity}</div>
-        `;
+            <div class="col-4">
+                <div class="row"> ${productName}</div>
+                
+            </div>
+            <div class="col-4">
+                <div class="row"> Price: $${productPrice} </div>
+            
+                <div class="row"> 
+                    <button class="btn btn-danger btn-sm" onclick="removeFromCart('${item.product_id}', '${cartId}')">Remove</button>
+                </div>
+            
+            </div>
+            <div class="col-4">
+            
+                <div class="row">Quantity: ${item.quantity}</div>
+
+                <div class="row">
+                    <div class="btn-group">
+                        <button type="button" class="btn btn-primary btn-sm dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
+                            Change Quantity
+                        </button>
+                        <ul class="dropdown-menu p-3" style="min-width: 200px;">
+                            <li>
+                                <input type="number" id="quantityInput" class="form-control" min="1" placeholder="Enter quantity" onkeydown="event.stopPropagation();">
+                            </li>
+                            <li>
+                                <button class="btn btn-success mt-2 w-50" onclick="addToCart('${item.product_id}', 'quantityInput')">
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+
+            </div>
+            
+            `;
 
             container.appendChild(rowDiv);
         }
@@ -372,5 +498,9 @@ function filterProducts() {
         }
     }
 }
+
+window.onload = function() {
+    document.getElementById("barcodeSearch").focus();
+};
 
 

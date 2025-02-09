@@ -4,6 +4,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
+import com.store.CamelitesMinimart.AddItemWBarcodeRequest;
+import com.store.CamelitesMinimart.entity.CartId;
 import com.store.CamelitesMinimart.entity.CartItems;
 import com.store.CamelitesMinimart.service.CartItemsService;
 
@@ -26,6 +28,18 @@ public class CartItemsController {
     @PostMapping("/addItem")
     public ResponseEntity<CartItems> saveEmployee(@RequestBody CartItems cartItems){
         return ResponseEntity.ok().body(cartItemsService.saveCartItems(cartItems));
+    }
+
+    @PostMapping("/addItem/barcode")
+    public ResponseEntity<CartItems> saveEmployee(@RequestBody AddItemWBarcodeRequest barcodeItem){
+        
+
+        return ResponseEntity.ok().body(cartItemsService.saveCartItemsBarcode(barcodeItem));
+    }
+
+    @PostMapping("/removeItem")
+    public ResponseEntity<CartItems> removeItem(@RequestBody CartItems cartItems){
+        return ResponseEntity.ok().body(cartItemsService.removeCartItems(cartItems));
     }
 
     @PostMapping("/listCartItems/{cartid}")
