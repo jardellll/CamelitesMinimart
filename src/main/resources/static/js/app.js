@@ -39,7 +39,7 @@ async function addToCart(product_id, quantityId) {
             .then((data) => {
                 console.log("Success:", data);
                 cartId = data.cart_id;
-                alert("new cart created");
+                //alert("new cart created");
                 activeCart = true;
             })
             .catch((error) => {
@@ -102,7 +102,7 @@ async function addToCartWBarcode(barcode) {
             .then((data) => {
                 console.log("Success:", data);
                 cartId = data.cart_id;
-                alert("new cart created");
+                //alert("new cart created");
                 activeCart = true;
             })
             .catch((error) => {
