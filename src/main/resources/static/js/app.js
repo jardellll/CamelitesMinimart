@@ -79,17 +79,17 @@ async function addToCart(product_id, quantityId) {
         console.error(error);
     }
 }
-const barcodeQuantityMap = {};
+//const barcodeQuantityMap = {};
 async function addToCartWBarcode(barcode) {
     if (!barcode.trim()) return;
     // const quantityElement = document.getElementById(quantityId);
     // const quantity = quantityElement.value;
 
-    if (barcodeQuantityMap[barcode]) {
-        barcodeQuantityMap[barcode] += 1;
-    } else {
-        barcodeQuantityMap[barcode] = 1;
-    }
+    // if (barcodeQuantityMap[barcode]) {
+    //     barcodeQuantityMap[barcode] += 1;
+    // } else {
+    //     barcodeQuantityMap[barcode] = 1;
+    // }
 
     if (activeCart === false) {
         await fetch(`${BASE_URL}/cart/newCart`, {
@@ -116,7 +116,7 @@ async function addToCartWBarcode(barcode) {
     // console.log(quantity);
     const dataOut = {
         barcode: barcode,
-        quantity: barcodeQuantityMap[barcode],
+        quantity: 1,
         cart_id: cartId,
     };
     try {
