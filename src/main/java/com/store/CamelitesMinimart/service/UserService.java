@@ -3,6 +3,7 @@ package com.store.CamelitesMinimart.service;
 import org.springframework.stereotype.Service;
 
 import com.store.CamelitesMinimart.LoginRequest;
+import com.store.CamelitesMinimart.LoginResponse;
 import com.store.CamelitesMinimart.entity.user;
 import com.store.CamelitesMinimart.repository.UserRepo;
 import org.springframework.security.crypto.argon2.Argon2PasswordEncoder;
@@ -42,7 +43,8 @@ public class UserService {
         userRepo.deleteById(id);
     }
 
-    public boolean auth (String username, String password){
+    public LoginResponse auth (String username, String password){
+        LoginResponse lr = new LoginResponse();
         List<user> users = getAllUsers();
         for (user user : users){
             String usernameFromDb = user.getUsername();
@@ -61,11 +63,16 @@ public class UserService {
             // }
             if (username.equals(user.getUsername()) ){
                 if (encoder.matches(password, user.getPassword())){
-                    return true;
+                    lr.setAuthenticated(true);
+                    lr.setId(user.getId());
+                    return lr;
                 }
                 
             }
         }
-        return false;
+
+        lr.setAuthenticated(false);
+        lr.setId(null);
+        return lr;
     }
 }

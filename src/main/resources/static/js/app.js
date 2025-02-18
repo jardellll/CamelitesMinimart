@@ -176,6 +176,7 @@ async function removeFromCart(product_id, cartId) {
 }
 
 async function getCartItems() {
+    let data;
     try {
         const response = await fetch(
             `${BASE_URL}/cartItems/listCartItems/` + cartId,
@@ -191,108 +192,103 @@ async function getCartItems() {
             throw new Error("could not fetch");
         }
         console.log("Success:", response);
-        const data = await response.json();
+        data = await response.json();
         console.log(data);
 
-        const container = document.getElementById("cart-items-container");
-        container.innerHTML = "";
+    } catch (error) {
+        console.error(error);
+    }
 
-        for (const item of data) {
-            let productId = item.product_id;
-            let productName = "";
-            let productPrice = "";
-            try {
-                const productResponse = await fetch(
-                    `${BASE_URL}/products/${productId}`,
-                    {
-                        method: "Get",
-                        headers: {
-                            "Content-Type": "application/json",
-                        },
-                    }
-                );
+    const container = document.getElementById("cart-items-container");
+    container.innerHTML = "";
 
-                if (!response.ok) {
-                    throw new Error("could not fetch");
-                }
-                const productData = await productResponse.json();
-                productName = productData.name;
-                productPrice = productData.price;
-                console.log(productName);
-                console.log(productPrice);
-            } catch (error) {
-                console.error(error);
-            }
-
-            const rowDiv = document.createElement("div");
-            rowDiv.classList.add("row", "mb-2");
-
-            rowDiv.innerHTML = `
-            <div class="col-4">
-                <div class="row"> ${productName}</div>
-                
-            </div>
-            <div class="col-4">
-                <div class="row"> Price: $${productPrice} </div>
-            
-                <div class="row"> 
-                    <button class="btn btn-danger btn-sm" onclick="removeFromCart('${item.product_id}', '${cartId}')">Remove</button>
-                </div>
-            
-            </div>
-            <div class="col-4">
-            
-                <div class="row">Quantity: ${item.quantity}</div>
-
-                <div class="row">
-                    <div class="btn-group">
-                        <button type="button" class="btn btn-primary btn-sm dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
-                            Change Quantity
-                        </button>
-                        <ul class="dropdown-menu p-3" style="min-width: 200px;">
-                            <li>
-                                <input type="number" id="quantityInput" class="form-control" min="1" placeholder="Enter quantity" onkeydown="event.stopPropagation();">
-                            </li>
-                            <li>
-                                <button class="btn btn-success mt-2 w-50" onclick="addToCart('${item.product_id}', 'quantityInput')">
-                            </li>
-                        </ul>
-                    </div>
-                </div>
-
-            </div>
-            
-            `;
-
-            container.appendChild(rowDiv);
-        }
+    const productPromises = data.map(async (item) => {
         try {
-            const checkoutResponse = await fetch(
-                `${BASE_URL}/cartItems/checkout/${cartId}`,
-                {
-                    method: "POST",
-                    headers: {
-                        "Content-Type": "application/json",
-                    },
-                }
-            );
+            const productResponse = await fetch(`${BASE_URL}/products/${item.product_id}`);
+            if (!productResponse.ok) throw new Error("Could not fetch product data");
 
-            if (!response.ok) {
-                throw new Error("could not fetch");
-            }
-            const checkoutData = await checkoutResponse.json();
-            console.log(checkoutData);
-            total = checkoutData;
-            console.log(total);
-
-            totalValueElement = document.getElementById("total-value");
-            totalValueElement2 = document.getElementById("total-value-modal");
-            totalValueElement.textContent = `$${total}`;
-            totalValueElement2.textContent = `$${total}`;
-
+            const productData = await productResponse.json();
+            return { ...item, productName: productData.name, productPrice: productData.price };
         } catch (error) {
             console.error(error);
+            return { ...item, productName: "Unknown", productPrice: "N/A" };
         }
+    });
+    
+    const products = await Promise.all(productPromises);
+    products.forEach(item => {
+        const rowDiv = document.createElement("div");
+        rowDiv.classList.add("row", "mb-2");
+        //rowDiv.innerHTML = `<div class="col-4">${item.productName}</div>`;
+        rowDiv.innerHTML = `
+        <div class="col-4">
+            <div class="row"> ${item.productName}</div>
+            
+        </div>
+        <div class="col-4">
+            <div class="row"> Price: $${item.productPrice} </div>
+        
+            <div class="row"> 
+                <button class="btn btn-danger btn-sm" onclick="removeFromCart('${item.product_id}', '${cartId}')">Remove</button>
+            </div>
+        
+        </div>
+        <div class="col-4">
+        
+            <div class="row">Quantity: ${item.quantity}</div>
+
+            <div class="row">
+                <div class="btn-group">
+                    <button type="button" class="btn btn-primary btn-sm dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
+                        Change Quantity
+                    </button>
+                    <ul class="dropdown-menu p-3" style="min-width: 200px;">
+                        <li>
+                            <input type="number" id="quantityInput" class="form-control" min="1" placeholder="Enter quantity" onkeydown="event.stopPropagation();">
+                        </li>
+                        <li>
+                            <button class="btn btn-success mt-2 w-50" onclick="addToCart('${item.product_id}', 'quantityInput')"></button>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+
+        </div>
+        
+        `;
+
+        container.appendChild(rowDiv);
+    });
+        // const rowDiv = document.createElement("div");
+        // rowDiv.classList.add("row", "mb-2");
+
+        
+    
+    try {
+        const checkoutResponse = await fetch(
+            `${BASE_URL}/cartItems/checkout/${cartId}`,
+            {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+            }
+        );
+
+        if (!response.ok) {
+            throw new Error("could not fetch");
+        }
+        const checkoutData = await checkoutResponse.json();
+        console.log(checkoutData);
+        total = checkoutData;
+        console.log(total);
+
+        totalValueElement = document.getElementById("total-value");
+        totalValueElement2 = document.getElementById("total-value-modal");
+        totalValueElement.textContent = `$${total}`;
+        totalValueElement2.textContent = `$${total}`;
+
+        
     } catch (error) {
         console.error(error);
     }
@@ -358,9 +354,18 @@ async function login(event){
         console.log("Success:", loginResponse);
         const loginData = await loginResponse.json();
 
-        if(loginData == true){
+        if(loginData.authenticated === true){
             authenticated = true;
-            sessionStorage.setItem("isAuthenticated", "true")
+            sessionStorage.setItem("isAuthenticated", loginData.authenticated)
+            sessionStorage.setItem("userId", loginData.id);
+
+            const accountLink = document.getElementById("account-link");
+            if (accountLink) {
+                accountLink.href = `/user/account/${loginData.id}`;
+            }
+
+            updateAccountLink();
+
             window.location.href = "/products/";
         }else{
             authenticated = false;
@@ -370,6 +375,50 @@ async function login(event){
         console.error(error);
     }
 }
+
+async function createNewUser(formData){
+
+    const username = formData.get('username'); // Get value of username field
+    const password = formData.get('password'); // Get value of password field
+    const fName = formData.get('fName'); // Get value of first name field
+    const lName = formData.get('lName'); // Get value of last name field
+    const accessLevel = formData.get('accessLevel'); 
+
+    console.log("Username:", username);
+    console.log("Password:", password);
+    console.log("First Name:", fName);
+    console.log("Last Name:", lName);
+    console.log("Access Level:", accessLevel);
+
+    const newUserDetails = {
+        username: formData.get('username'),
+        password: formData.get('password'),
+        fName: formData.get('fName'),
+        lName: formData.get('lName'),
+        accessLevel: formData.get('accessLevel')
+    };
+    console.log(JSON.stringify(newUserDetails));
+
+    try {
+        const newUserResponse = await fetch(`${BASE_URL}/user/addNewUser`, {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify(newUserDetails),
+        });
+
+        if (!newUserResponse.ok) {
+            throw new Error("could not fetch");
+        }
+        console.log("Success:", newUserResponse);
+        const newUserData = await newUserResponse.json();
+        window.location.reload();
+    } catch (error) {
+        console.error(error);
+    }
+}
+
 
 async function newProduct() {
     let name = document.getElementById("name").value;
@@ -499,8 +548,49 @@ function filterProducts() {
     }
 }
 
-window.onload = function() {
-    document.getElementById("barcodeSearch").focus();
-};
+document.addEventListener("DOMContentLoaded", function () {
+    const barcodeInput = document.getElementById("barcodeSearch");
+    if (barcodeInput) {
+        barcodeInput.focus(); // Only focus if the element exists
+    }
+});
+
+function updateAccountLink() {
+    const userId = sessionStorage.getItem("userId"); // Retrieve userId from sessionStorage
+    const accountLink = document.getElementById("account-link"); // Select the account link
+
+    if (userId && accountLink) {
+        accountLink.href = `/user/account/${userId}`; // Set the correct URL
+    } else {
+        console.warn("User ID not found in sessionStorage");
+    }
+}
+
+document.addEventListener("DOMContentLoaded", function () {
+    updateAccountLink();
+});
+
+document.addEventListener("DOMContentLoaded", function () {
+    const createUserForm = document.getElementById("createUserForm");
+
+    createUserForm.addEventListener("submit", function (event) {
+        event.preventDefault(); // Prevent default form submission (GET request)
+
+        const formData = new FormData(createUserForm); // Capture form data
+        createNewUser(formData); // Call your function
+    });
+});
+// function handleSubmit(event) {
+//     event.preventDefault(); // Prevent form from submitting in the usual way
+
+//     // Retrieve form data
+//     const formData = new FormData(event.target); // Get all form fields
+//     const formValues = Object.fromEntries(formData.entries()); // Convert FormData to an object
+
+//     // Send the form data to a JavaScript function or handle it however you like
+//     createNewUser(formValues);
+// }
+
+
 
 

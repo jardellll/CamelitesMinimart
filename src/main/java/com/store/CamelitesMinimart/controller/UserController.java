@@ -6,6 +6,7 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import com.store.CamelitesMinimart.LoginRequest;
+import com.store.CamelitesMinimart.LoginResponse;
 import com.store.CamelitesMinimart.entity.user;
 import com.store.CamelitesMinimart.service.UserService;
 
@@ -33,6 +34,12 @@ public class UserController {
          model.addAttribute("users", userService.getAllUsers() );
         return "login";
     }
+
+    @GetMapping("/account/{id}")
+    public String accountInfo(Model model, @PathVariable Long id){
+         model.addAttribute("user", userService.getUserById(id) );
+        return "account";
+    }
     
     @GetMapping("/{id}")
     public ResponseEntity<user> getUserById(@PathVariable Long id){
@@ -45,7 +52,7 @@ public class UserController {
     }
 
     @PostMapping("/login")
-    public ResponseEntity<Boolean>loginUser(@RequestBody LoginRequest loginRequest){
+    public ResponseEntity<LoginResponse>loginUser(@RequestBody LoginRequest loginRequest){
         String username = loginRequest.getUsername();
         String password = loginRequest.getPassword();
         return ResponseEntity.ok().body(userService.auth(username, password));
