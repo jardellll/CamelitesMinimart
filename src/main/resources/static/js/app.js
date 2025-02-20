@@ -303,6 +303,7 @@ async function getCartItems() {
 
 
 async function completeSale(){
+    const userIdForSale = sessionStorage.getItem("userId") || "2";
     try {
         const saleResponse = await fetch(
             `${BASE_URL}/sale/completeSale/${cartId}/${cash.value}`,
@@ -310,7 +311,7 @@ async function completeSale(){
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",
-                    "userId":2
+                    "userId":userIdForSale
                 },
             }
         );
