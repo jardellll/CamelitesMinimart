@@ -275,7 +275,7 @@ async function getCartItems() {
             }
         );
 
-        if (!response.ok) {
+        if (!checkoutResponse.ok) {
             throw new Error("could not fetch");
         }
         const checkoutData = await checkoutResponse.json();
