@@ -573,13 +573,23 @@ document.addEventListener("DOMContentLoaded", function () {
 
 document.addEventListener("DOMContentLoaded", function () {
     const createUserForm = document.getElementById("createUserForm");
+    if (createUserForm) {
+        createUserForm.addEventListener("submit", function (event) {
+            event.preventDefault(); // Prevent default form submission (GET request)
 
-    createUserForm.addEventListener("submit", function (event) {
-        event.preventDefault(); // Prevent default form submission (GET request)
+            const formData = new FormData(createUserForm); // Capture form data
+            createNewUser(formData); // Call your function
+        });
+    }
+});
 
-        const formData = new FormData(createUserForm); // Capture form data
-        createNewUser(formData); // Call your function
-    });
+document.addEventListener("DOMContentLoaded", function () {
+    if (document.getElementById("logout-btn")) {
+        document.getElementById("logout-btn").addEventListener("click", function () {
+            sessionStorage.clear(); // Clear session storage
+            window.location.href = "/user/"; 
+        });             
+    }
 });
 // function handleSubmit(event) {
 //     event.preventDefault(); // Prevent form from submitting in the usual way
