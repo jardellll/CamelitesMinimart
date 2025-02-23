@@ -33,8 +33,7 @@ public class SalesReportService {
     @Transactional
     public byte[] getSalesReport(String startDate, String endDate, Long userId){
         String sql = "SELECT * FROM sales_by_user WHERE sale_completed_ts BETWEEN CAST(? AS timestamp with time zone) AND CAST(? AS timestamp with time zone) AND user_id = ?";
-        System.out.println("start date" + startDate) ; 
-        System.out.println("end date: " + endDate) ; 
+
         long startTime = System.currentTimeMillis();
         List<Map<String, Object>> viewData= jdbcTemplate.queryForList(sql, startDate, endDate, userId);
         long endTime = System.currentTimeMillis();
