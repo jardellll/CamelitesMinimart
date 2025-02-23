@@ -42,12 +42,14 @@ public class SaleController {
     @GetMapping("/generate/dayly/report/{userId}")
     public ResponseEntity<byte[]> getSalesReport(@PathVariable Long userId) {
         
-        LocalDate today = LocalDate.now();
+        ZoneId zoneId = ZoneId.of("America/New_York");
+        LocalDate today = LocalDate.now(zoneId);
+        //LocalDate today = LocalDate.now();
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("ddMMMyyyy");
         String todayDate = today.format(formatter).toUpperCase();
 
         // Get start and end timestamp for today's date with the required timezone and format
-        ZoneId zoneId = ZoneId.of("America/New_York"); // Adjust the timezone as needed (EST or EDT)
+        //ZoneId zoneId = ZoneId.of("America/New_York"); // Adjust the timezone as needed (EST or EDT)
         ZonedDateTime startZonedDateTime = today.atStartOfDay(zoneId); // 00:00:00 with time zone
         ZonedDateTime endZonedDateTime = today.atTime(23, 59, 59, 999999999).atZone(zoneId); // 23:59:59 with time zone
 
