@@ -34,7 +34,16 @@ public class SalesReportService {
     public byte[] getSalesReport(String startDate, String endDate, Long userId){
         String sql = "SELECT * FROM sales_by_user WHERE sale_completed_ts BETWEEN CAST(? AS timestamp with time zone) AND CAST(? AS timestamp with time zone) AND user_id = ?";
 
+        long startTime = System.currentTimeMillis();
         List<Map<String, Object>> viewData= jdbcTemplate.queryForList(sql, startDate, endDate, userId);
+        long endTime = System.currentTimeMillis();
+        System.out.println("Query Execution Time: " + (endTime - startTime) + "ms");    
+
+        System.out.println("Records Retrieved: " + viewData.size());
+        for (Map<String, Object> row : viewData) {
+            System.out.println(row);
+        }
+
 
         double totalSum = viewData.stream()
                               .mapToDouble(row -> Double.parseDouble(row.get("total").toString()))
@@ -42,6 +51,7 @@ public class SalesReportService {
 
         ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
         try {
+            System.out.println("Records Retrieved: " + viewData.size());
             generatePdf(viewData, totalSum, byteArrayOutputStream);
         } catch (IOException e) {
             e.printStackTrace();
