@@ -6,6 +6,8 @@ import org.springframework.stereotype.Service;
 import com.itextpdf.text.pdf.PdfPTable;
 import com.itextpdf.text.pdf.PdfWriter;
 
+import jakarta.transaction.Transactional;
+
 import org.springframework.jdbc.core.RowMapper;
 
 import java.io.ByteArrayOutputStream;
@@ -28,6 +30,7 @@ public class SalesReportService {
     @Autowired
     private JdbcTemplate jdbcTemplate;
 
+    @Transactional
     public byte[] getSalesReport(String startDate, String endDate, Long userId){
         String sql = "SELECT * FROM sales_by_user WHERE sale_completed_ts BETWEEN CAST(? AS timestamp with time zone) AND CAST(? AS timestamp with time zone) AND user_id = ?";
 
