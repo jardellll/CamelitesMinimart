@@ -21,27 +21,8 @@
        
       </ul>
 
-    <!-- <form onsubmit="return login(event);">
-        <div class="form-group row">
-          <label for="username" class="col-sm-2 col-form-label">Username</label>
-          <div class="col-sm-10">
-            <input class="form-control" id="username" placeholder="Username">
-          </div>
-        </div>
-        <div class="form-group row">
-          <label for="password" class="col-sm-2 col-form-label">Password</label>
-          <div class="col-sm-10">
-            <input type="password" class="form-control" id="password" placeholder="Password">
-          </div>
-        </div>
-        <div class="form-group row">
-            <div class="col-sm-10">
-              <button type="submit" class="btn btn-primary">Sign in</button>
-            </div>
-          </div>
-    </form> -->
     <div class="container mt-5">
-        <div class="row justify-content-center">
+        <div class="row">
             <!-- User Information Card -->
             <div class="col-md-6">
                 <div class="card shadow-lg">
@@ -68,6 +49,33 @@
                     </div>
                     <div class="card-footer text-center">
                         <button class="btn btn-outline-primary">Edit Profile</button>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="card shadow-lg">
+                    <div class="card-header bg-primary text-white text-center">
+                        <h4>Report Generation</h4>
+                    </div>
+                    <div class="card-body">
+                        <div class="mb-3">
+                            <label class="fw-bold">Username:</label>
+                            <div class="ps-3" th:text="${user.username}">JohnDoe</div>
+                        </div>
+                        <div class="mb-3">
+                            <label class="fw-bold">Access Level:</label>
+                            <div class="ps-3" th:text="${user.accessLevel}">Admin</div>
+                        </div>
+                        <div class="mb-3">
+                            <label class="fw-bold">Report Date:</label>
+                            <input type="date" id="reportDate" class="form-control">
+                        </div>
+                        <div class="mb-3">
+                            <label class="fw-bold">after generating the report please save the file to the computer</label>
+                        </div>
+                    </div>
+                    <div class="card-footer text-center">
+                        <button id="reportGenerateBtn" class="btn btn-outline-primary">Generate Report</button>
                     </div>
                 </div>
             </div>

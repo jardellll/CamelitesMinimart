@@ -39,19 +39,20 @@ public class SaleController {
         return ResponseEntity.ok().body(saleService.completeSale(cartid, cash, userId));
     }
 
-    @GetMapping("/generate/dayly/report/{userId}")
-    public ResponseEntity<byte[]> getSalesReport(@PathVariable Long userId) {
+    @GetMapping("/generate/dayly/report/{userId}/{reportDate}")
+    public ResponseEntity<byte[]> getSalesReport(@PathVariable Long userId, @PathVariable String reportDate) {
         
+        LocalDate date = LocalDate.parse(reportDate, DateTimeFormatter.ISO_LOCAL_DATE);
         ZoneId zoneId = ZoneId.of("America/New_York");
-        LocalDate today = LocalDate.now(zoneId);
+        //LocalDate today = LocalDate.now(zoneId);
         //LocalDate today = LocalDate.now();
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("ddMMMyyyy");
-        String todayDate = today.format(formatter).toUpperCase();
+        String repDate = date.format(formatter).toUpperCase();
 
         // Get start and end timestamp for today's date with the required timezone and format
         //ZoneId zoneId = ZoneId.of("America/New_York"); // Adjust the timezone as needed (EST or EDT)
-        ZonedDateTime startZonedDateTime = today.atStartOfDay(zoneId); // 00:00:00 with time zone
-        ZonedDateTime endZonedDateTime = today.atTime(23, 59, 59, 999999999).atZone(zoneId); // 23:59:59 with time zone
+        ZonedDateTime startZonedDateTime = date.atStartOfDay(zoneId); // 00:00:00 with time zone
+        ZonedDateTime endZonedDateTime = date.atTime(23, 59, 59, 999999999).atZone(zoneId); // 23:59:59 with time zone
 
         // Format the ZonedDateTime to match the required format "2025-02-22 17:10:50.380914-04"
         DateTimeFormatter timestampFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss.SSSSSSXXX");
@@ -62,7 +63,7 @@ public class SaleController {
         byte[] pdfBytes = salesReportService.getSalesReport(formattedStartDate, formattedEndDate, userId);
 
         // Customize the filename
-        String fileName = "DailySalesReportFor"+userId +"On"+todayDate+".pdf";
+        String fileName = "DailySalesReportFor"+userId +"On"+repDate+".pdf";
 
         // Set the content disposition and the content type
         HttpHeaders headers = new HttpHeaders();

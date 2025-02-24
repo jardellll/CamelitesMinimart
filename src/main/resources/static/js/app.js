@@ -510,6 +510,53 @@ async function addStock(product_id, stockQuantity) {
 
 }
 
+async function generateDailyReport() {
+
+    let reportDate = document.getElementById("reportDate").value;
+    const userIdForReport = sessionStorage.getItem("userId") || "2";
+    console.log(reportDate);
+    
+
+    try {
+        const dailyReportResponse = await fetch(`${BASE_URL}/sale/generate/dayly/report/${userIdForReport}/${reportDate}`, {
+            method: "GET", 
+            headers: {
+                "Content-Type": "application/json",
+            },
+        });
+
+        if (!dailyReportResponse.ok) {
+            throw new Error("could not fetch");
+        }
+        console.log("Success:", dailyReportResponse);
+        const blob = await dailyReportResponse.blob();
+        try{
+            if (blob.size === 0) {
+                alert("The report is empty or failed to generate.");
+                return;
+            }
+            
+            let url = window.URL.createObjectURL(blob);
+            let a = document.createElement("a");
+            a.href = url;
+            a.download = `DailySalesReport_${reportDate}.pdf`;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            window.URL.revokeObjectURL(url);
+        }
+        catch (error) {
+            console.error("Error generating report:", error);
+            alert("Failed to generate report. Please try again.");
+        }
+
+    } catch (error) {
+        console.error(error);
+    }
+
+
+}
+
 document.addEventListener("DOMContentLoaded", ()=>{
         const isAuthenticated = sessionStorage.getItem("isAuthenticated");
     
@@ -589,6 +636,12 @@ document.addEventListener("DOMContentLoaded", function () {
             sessionStorage.clear(); // Clear session storage
             window.location.href = "/user/"; 
         });             
+    }
+});
+document.addEventListener("DOMContentLoaded", function () {
+    let generateReportBtn = document.getElementById("reportGenerateBtn");
+    if (generateReportBtn) {
+        document.getElementById("reportGenerateBtn").addEventListener("click", generateDailyReport);
     }
 });
 // function handleSubmit(event) {
