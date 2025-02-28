@@ -655,13 +655,13 @@ document.addEventListener("DOMContentLoaded", function () {
         document.getElementById("reportGenerateBtn").addEventListener("click", generateDailyReport);
     }
 });
-document.addEventListener("DOMContentLoaded", function () {
-    const accessLevel = sessionStorage.getItem("accessLevel")?.toLowerCase();;
+// document.addEventListener("DOMContentLoaded", function () {
+//     const accessLevel = sessionStorage.getItem("accessLevel")?.toLowerCase();;
 
-    if (accessLevel !== "manager") { 
-        document.getElementById("createUserFormRow").style.display = "none";
-    }
-});
+//     if (accessLevel !== "manager") { 
+//         document.getElementById("createUserFormRow").style.display = "none";
+//     }
+// });
 // function handleSubmit(event) {
 //     event.preventDefault(); // Prevent form from submitting in the usual way
 
