@@ -369,7 +369,7 @@ async function login(event){
             authenticated = true;
             sessionStorage.setItem("isAuthenticated", loginData.authenticated)
             sessionStorage.setItem("userId", loginData.id);
-            sessionStorage.setItem("accessLevel", loginData.accessLevel);
+            //sessionStorage.setItem("accessLevel", loginData.accessLevel);
 
             const accountLink = document.getElementById("account-link");
             if (accountLink) {
