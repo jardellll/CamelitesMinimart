@@ -65,6 +65,7 @@ public class UserService {
                 if (encoder.matches(password, user.getPassword())){
                     lr.setAuthenticated(true);
                     lr.setId(user.getId());
+                    lr.setAccessLevel(user.getAccessLevel());
                     return lr;
                 }
                 
@@ -73,6 +74,7 @@ public class UserService {
 
         lr.setAuthenticated(false);
         lr.setId(null);
+        lr.setAccessLevel(null);
         return lr;
     }
 }

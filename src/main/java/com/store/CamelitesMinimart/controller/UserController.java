@@ -7,6 +7,7 @@ import org.springframework.web.bind.annotation.*;
 
 import com.store.CamelitesMinimart.LoginRequest;
 import com.store.CamelitesMinimart.LoginResponse;
+import com.store.CamelitesMinimart.entity.Carts;
 import com.store.CamelitesMinimart.entity.user;
 import com.store.CamelitesMinimart.service.UserService;
 
@@ -33,6 +34,11 @@ public class UserController {
     public String userLogin(Model model){
          model.addAttribute("users", userService.getAllUsers() );
         return "login";
+    }
+
+    @GetMapping("/getUsers")
+    public ResponseEntity<List<user>> getUsers(){
+        return ResponseEntity.ok().body(userService.getAllUsers());
     }
 
     @GetMapping("/account/{id}")
