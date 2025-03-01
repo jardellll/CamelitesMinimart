@@ -657,9 +657,12 @@ document.addEventListener("DOMContentLoaded", function () {
 });
 document.addEventListener("DOMContentLoaded", function () {
     const accessLevel = sessionStorage.getItem("accessLevel")?.toLowerCase();;
-
-    if (accessLevel !== "manager") { 
-        document.getElementById("createUserFormRow").style.display = "none";
+    let newUserForm = document.getElementById("createUserFormRow");
+    
+    if (newUserForm){
+        if (accessLevel !== "manager") { 
+            newUserForm.style.display = "none";
+        }
     }
 });
 // function handleSubmit(event) {
