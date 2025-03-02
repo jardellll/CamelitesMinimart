@@ -55,14 +55,14 @@ public class UserService {
             // String usernameFromReq = loginRequest.getUsername();
             // String passFromReq= loginRequest.getPassword();
 
-            // if (loginRequest.getUsername().equals(user.getUsername()) ){
-            //     if (encoder.matches(loginRequest.getPassword(), user.getPassword())){
-            //         return true;
+            System.out.println("Checking user: " + user.getUsername());
+            System.out.println("Password from DB: " + user.getPassword());
+            System.out.println("Password from request: " + password);
             //     }
                 
             // }
             if (username.equals(user.getUsername()) ){
-                if (encoder.matches(password, user.getPassword())){
+                if (user.getPassword() != null && password != null && encoder.matches(password, user.getPassword())){
                     lr.setAuthenticated(true);
                     lr.setId(user.getId());
                     lr.setAccessLevel(user.getAccessLevel());
