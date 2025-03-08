@@ -26,26 +26,31 @@ let authenticated = false;
 // });
 const BASE_URL = window.location.origin;
 async function addToCart(product_id, quantityId) {
+    let isCreatingCart = false;
     const quantityElement = document.getElementById(quantityId);
     const quantity = quantityElement.value;
-    if (activeCart === false) {
-        await fetch(`${BASE_URL}/cart/newCart`, {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json",
-            },
-        })
-            .then(async (response) => await response.json())
-            .then((data) => {
-                console.log("Success:", data);
-                cartId = data.cart_id;
-                //alert("new cart created");
-                activeCart = true;
-            })
-            .catch((error) => {
-                console.error("Error:", error);
-                alert("Error creating cart");
+    if (!activeCart && !isCreatingCart) {
+        isCreatingCart = true;
+        try {
+            const response = await fetch(`${BASE_URL}/cart/newCart`, {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
             });
+
+            if (!response.ok) {
+                throw new Error("Error creating cart");
+            }
+
+            const data = await response.json();
+            console.log("Success:", data);
+            cartId = data.cart_id;
+            activeCart = true;
+        } catch (error) {
+            console.error("Error:", error);
+            alert("Error creating cart");
+        } finally {
+            isCreatingCart = false;
+        }
     }
 
     //, cartId) {
@@ -81,6 +86,7 @@ async function addToCart(product_id, quantityId) {
 }
 //const barcodeQuantityMap = {};
 async function addToCartWBarcode(barcode) {
+    let isCreatingCart = false;
     if (!barcode.trim()) return;
     // const quantityElement = document.getElementById(quantityId);
     // const quantity = quantityElement.value;
@@ -91,24 +97,28 @@ async function addToCartWBarcode(barcode) {
     //     barcodeQuantityMap[barcode] = 1;
     // }
 
-    if (activeCart === false) {
-        await fetch(`${BASE_URL}/cart/newCart`, {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json",
-            },
-        })
-            .then(async (response) => await response.json())
-            .then((data) => {
-                console.log("Success:", data);
-                cartId = data.cart_id;
-                //alert("new cart created");
-                activeCart = true;
-            })
-            .catch((error) => {
-                console.error("Error:", error);
-                alert("Error creating cart");
+    if (!activeCart && !isCreatingCart) {
+        isCreatingCart = true;
+        try {
+            const response = await fetch(`${BASE_URL}/cart/newCart`, {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
             });
+
+            if (!response.ok) {
+                throw new Error("Error creating cart");
+            }
+
+            const data = await response.json();
+            console.log("Success:", data);
+            cartId = data.cart_id;
+            activeCart = true;
+        } catch (error) {
+            console.error("Error:", error);
+            alert("Error creating cart");
+        } finally {
+            isCreatingCart = false;
+        }
     }
 
     //, cartId) {
@@ -359,6 +369,7 @@ async function login(event){
             authenticated = true;
             sessionStorage.setItem("isAuthenticated", loginData.authenticated)
             sessionStorage.setItem("userId", loginData.id);
+            sessionStorage.setItem("accessLevel", loginData.accessLevel);
 
             const accountLink = document.getElementById("account-link");
             if (accountLink) {
@@ -642,6 +653,16 @@ document.addEventListener("DOMContentLoaded", function () {
     let generateReportBtn = document.getElementById("reportGenerateBtn");
     if (generateReportBtn) {
         document.getElementById("reportGenerateBtn").addEventListener("click", generateDailyReport);
+    }
+});
+document.addEventListener("DOMContentLoaded", function () {
+    const accessLevel = sessionStorage.getItem("accessLevel")?.toLowerCase();;
+    let newUserForm = document.getElementById("createUserFormRow");
+    
+    if (newUserForm){
+        if (accessLevel !== "manager") { 
+            newUserForm.style.display = "none";
+        }
     }
 });
 // function handleSubmit(event) {
