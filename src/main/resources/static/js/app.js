@@ -483,6 +483,44 @@ async function newProduct() {
 
 
 }
+async function updateProduct() {
+    let name = document.getElementById("newName").value;
+    let price = document.getElementById("newPrice").value;
+    let details = document.getElementById("newDetails").value.trim();
+    let barcode = document.getElementById("newBarcode").value;
+    let identifier = document.getElementById("identifier").value;
+
+    console.log(name);
+    console.log(price);
+    console.log(details);
+    console.log(barcode);
+
+    const updateProductRequest = {
+        name: name,
+        price: price,
+        details: details,
+        barcode: barcode,
+        id: identifier
+    };
+
+    try {
+        const updateProductResponse = await fetch(`${BASE_URL}/products/updateProduct`, {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify(updateProductRequest),
+        });
+
+        if (!updateProductResponse.ok) {
+            throw new Error("Could not fetch");
+        }
+        console.log("Success:", updateProductResponse);
+        window.location.reload();
+    } catch (error) {
+        console.error("Error:", error);
+    }
+}
 
 async function addStock(product_id, stockQuantity) {
     
@@ -664,6 +702,42 @@ document.addEventListener("DOMContentLoaded", function () {
             newUserForm.style.display = "none";
         }
     }
+});
+
+document.addEventListener("DOMContentLoaded", function () {
+    const editButtons = document.querySelectorAll(".edit-product-btn");
+
+    if (editButtons.length === 0) {
+        console.warn("No edit buttons found.");
+        return;
+    }
+
+    editButtons.forEach(button => {
+        button.addEventListener("click", function () {
+            const productId = this.getAttribute("data-product-id");
+            // Open the modal dynamically based on the selected product ID
+
+            // Dynamically populate the form fields with the product information
+            const modalName = document.getElementById("newName");
+            const modalPrice = document.getElementById("newPrice");
+            const modalDetails = document.getElementById("newDetails");
+            const modalBarcode = document.getElementById("newBarcode");
+            const modalIdentifier = document.getElementById("identifier");
+
+            // Set the modal's hidden input field with the product ID
+            modalIdentifier.value = productId;
+
+            // // Set the input fields with the existing product information (replace with dynamic data as needed)
+            // modalName.value = "Product Name"; // Replace with actual dynamic data
+            // modalPrice.value = "100"; // Replace with actual dynamic data
+            // modalDetails.value = "Product Details"; // Replace with actual dynamic data
+            // modalBarcode.value = "123456"; // Replace with actual dynamic data
+
+            // Now show the modal
+            const modal = new bootstrap.Modal(document.getElementById('updateProductScreen'));
+            modal.show();
+        });
+    });
 });
 // function handleSubmit(event) {
 //     event.preventDefault(); // Prevent form from submitting in the usual way
