@@ -6,6 +6,7 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import com.store.CamelitesMinimart.NewProductRequest;
+import com.store.CamelitesMinimart.UpdateProductRequest;
 import com.store.CamelitesMinimart.entity.Product;
 import com.store.CamelitesMinimart.service.ProductService;
 import com.store.CamelitesMinimart.service.StockService;
@@ -38,8 +39,10 @@ public class ProductController {
     @PostMapping("/newProduct")
     public ResponseEntity<Product> newProduct(@RequestBody NewProductRequest newProductRequest){
         return ResponseEntity.ok().body(productService.saveNewProduct(newProductRequest));
-
-
+    }
+    @PostMapping("/updateProduct")
+    public ResponseEntity<Product> updateProduct(@RequestBody UpdateProductRequest updateProduct){
+        return ResponseEntity.ok().body(productService.updateProduct(updateProduct));
     }
     // @PostMapping("/")
     // public ResponseEntity<Product> saveEmployee(@RequestBody Product product){
