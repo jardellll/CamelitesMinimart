@@ -31,7 +31,7 @@
                             <p><span th:text="${item.name}" class="product-name"></span> ID: <span th:attr="data-product-id=${item.productId}" th:text="${item.productId}"></span></p>
                             <p>Quantity: <span th:text="${item.quantity}"></span> Price: <span th:text="${item.price}"></span></p>
                             <p>Details: <span th:text="${item.details}"></span></p>
-                            <button type="button" class="btn btn-primary">edit product</button>
+                            <button type="button" class="btn btn-primary edit-product-btn" data-bs-toggle="modal" data-bs-target="#updateProductScreen" th:attr="data-product-id=${item.productId}">edit product</button>
                             <!-- <button type="button" class="btn btn-primary" th:attr="data-product-id=${item.productId}">add stock</button> -->
                             <div class="btn-group">
                                 <button type="button" class="btn btn-primary dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
@@ -102,8 +102,42 @@
                                 </div>
                             </div>
                         </div>
-                    </div>
+                </div>
 
+            </div>
+
+            <div class="modal fade" id="updateProductScreen" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                <div class="modal-dialog modal-dialog-centered">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h1 class="modal-title fs-5" id="exampleModalLabel">update a product</h1>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body">
+                            <div class="form-floating mb-3">
+                                <input type="text" class="form-control" id="newName" placeholder="new name">
+                                <label for="floatingInput">newName</label>
+                            </div>
+                            <div class="form-floating mb-3">
+                                <input type="text" class="form-control" id="newPrice" placeholder="new price">
+                                <label for="floatingInput">newPrice</label>
+                            </div>
+                            <div class="form-floating">
+                                <textarea class="form-control" placeholder="new Details" id="newDetails"></textarea>
+                                <label for="floatingTextarea">newDetails</label>
+                            </div>
+                            <div class="form-floating mb-3">
+                                <input type="text" class="form-control" id="newBarcode" placeholder="new barcode">
+                                <label for="floatingInput">newBarcode</label>
+                            </div>
+                            <input type="hidden" id="identifier">
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                            <button type="button" class="btn btn-primary" onclick="updateProduct()">done</button>
+                        </div>
+                    </div>
+                </div>
             </div>
 
     <script src="/js/app.js"></script>

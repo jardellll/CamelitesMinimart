@@ -5,6 +5,7 @@ import org.springframework.data.domain.Example;
 import org.springframework.stereotype.Service;
 
 import com.store.CamelitesMinimart.NewProductRequest;
+import com.store.CamelitesMinimart.UpdateProductRequest;
 import com.store.CamelitesMinimart.entity.Product;
 import com.store.CamelitesMinimart.repository.ProductRepo;
 
@@ -80,12 +81,31 @@ public class ProductService {
         return savedProduct;
     }
 
-    public Product updateProduct(Product product){
-        // Optional<Product> existingProduct = productRepo.findById(product.getId());
+    public Product updateProduct(UpdateProductRequest updateProduct){
         
-        Product updateProduct = productRepo.save(product);
+        Optional<Product> optionalProduct = productRepo.findById(updateProduct.getId());
+        if (optionalProduct.isPresent()){
+            Product existingProduct = optionalProduct.get();
 
-        return updateProduct;
+            if (updateProduct.getName() != null){
+                existingProduct.setName(updateProduct.getName());
+            }
+            if (updateProduct.getBarcode() != null){
+                existingProduct.setBarcode(updateProduct.getBarcode());
+            }
+            if (updateProduct.getPrice() != 0.0){
+                existingProduct.setPrice(updateProduct.getPrice());
+            }
+            if (updateProduct.getDetails() != null){
+                existingProduct.setDetails(updateProduct.getDetails());
+            }
+
+            productRepo.save(existingProduct);
+            return existingProduct;
+
+        }
+        return null;
+
     }
 
     public void deleteProductById(Long id){
