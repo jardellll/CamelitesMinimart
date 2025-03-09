@@ -704,6 +704,7 @@ document.addEventListener("DOMContentLoaded", function () {
     }
 });
 
+
 document.addEventListener("DOMContentLoaded", function () {
     const editButtons = document.querySelectorAll(".edit-product-btn");
 
@@ -739,6 +740,7 @@ document.addEventListener("DOMContentLoaded", function () {
         });
     });
 });
+
 // function handleSubmit(event) {
 //     event.preventDefault(); // Prevent form from submitting in the usual way
 
