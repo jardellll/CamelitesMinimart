@@ -314,9 +314,13 @@ async function getCartItems() {
 
 async function completeSale(){
     const userIdForSale = sessionStorage.getItem("userId") || "2";
+    let cashValue = cash.value;
+    if (cashValue === ""){
+        cashValue = 0.0
+    }
     try {
         const saleResponse = await fetch(
-            `${BASE_URL}/sale/completeSale/${cartId}/${cash.value}`,
+            `${BASE_URL}/sale/completeSale/${cartId}/${cashValue}`,
             {
                 method: "POST",
                 headers: {
