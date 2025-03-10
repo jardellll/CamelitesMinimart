@@ -87,16 +87,16 @@ public class ProductService {
         if (optionalProduct.isPresent()){
             Product existingProduct = optionalProduct.get();
 
-            if (updateProduct.getName() != null){
+            if (updateProduct.getName() != null && updateProduct.getName() != ""){
                 existingProduct.setName(updateProduct.getName());
             }
-            if (updateProduct.getBarcode() != null){
+            if (updateProduct.getBarcode() != null && updateProduct.getBarcode() != ""){
                 existingProduct.setBarcode(updateProduct.getBarcode());
             }
             if (updateProduct.getPrice() != 0.0){
                 existingProduct.setPrice(updateProduct.getPrice());
             }
-            if (updateProduct.getDetails() != null){
+            if (updateProduct.getDetails() != null && updateProduct.getDetails() != ""){
                 existingProduct.setDetails(updateProduct.getDetails());
             }
 

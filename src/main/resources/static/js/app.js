@@ -495,6 +495,10 @@ async function updateProduct() {
     console.log(details);
     console.log(barcode);
 
+    if (price === ""){
+        price = 0.0
+    }
+
     const updateProductRequest = {
         name: name,
         price: price,
