@@ -45,6 +45,9 @@ public class SaleService {
     public Double completeSale(Long CartId, Double cash, Long userId){
         Double total = cartItemsService.checkout(CartId);
 
+        if (cash == 0.0){
+            cash = total;
+        }
         double change = cash - total;
 
 
