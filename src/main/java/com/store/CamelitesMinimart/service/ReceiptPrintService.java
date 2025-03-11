@@ -3,12 +3,16 @@ import com.github.anastaciocintra.escpos.EscPos;
 import com.github.anastaciocintra.output.PrinterOutputStream;
 
 import javax.print.PrintService;
+
+import org.springframework.stereotype.Service;
+
 import java.io.IOException;
 
+@Service
 public class ReceiptPrintService {
     public String printReceipt(){
         try {
-            PrintService printService = PrinterOutputStream.getPrintServiceByName("");
+            PrintService printService = PrinterOutputStream.getPrintServiceByName("USB Receipt Printer");
 
             if (printService != null) {
                 EscPos escpos = new EscPos(new PrinterOutputStream(printService));
