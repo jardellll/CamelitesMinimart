@@ -12,7 +12,7 @@ import java.io.IOException;
 public class ReceiptPrintService {
     public String printReceipt(){
         try {
-            PrintService printService = PrinterOutputStream.getPrintServiceByName("USB Receipt Printer");
+            PrintService printService = PrinterOutputStream.getPrintServiceByName("RONGTA 80mm Series Printer");
 
             if (printService != null) {
                 EscPos escpos = new EscPos(new PrinterOutputStream(printService));
