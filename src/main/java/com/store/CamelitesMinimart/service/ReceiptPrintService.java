@@ -38,6 +38,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Map;
 
@@ -65,7 +66,12 @@ public class ReceiptPrintService {
     }
 
     private void generatePdf(List<Map<String, Object>> viewData, ByteArrayOutputStream outputStream) throws IOException{
-        Document document = new Document(new Rectangle(226, 9999));
+        int baseHeight = 200; // Header and footer space
+        int itemHeight = 20; // Height per item
+        int totalHeight = baseHeight + (itemHeight * viewData.size());
+        
+        Rectangle pageSize = new Rectangle(226, totalHeight);
+        Document document = new Document(pageSize, 5, 5, 0, 0);
         try {
             PdfWriter.getInstance(document, outputStream);
         } catch (DocumentException e) {
@@ -78,9 +84,14 @@ public class ReceiptPrintService {
 
         // Header
         try {
-            document.add(new Paragraph("Camelite's Wholesale\n", boldFont));
-            document.add(new Paragraph("Date: " + LocalDateTime.now().toString() + "\n", font));
-            document.add(new Paragraph("---------------------------\n", font));
+            //document.add(new Paragraph("Camelite's Wholesale\n", boldFont));
+            Paragraph header = new Paragraph("Camelite's Wholesale\n", boldFont);
+            header.setAlignment(Element.ALIGN_CENTER);
+            document.add(header);
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+            String formattedDate = LocalDateTime.now().format(formatter);
+            document.add(new Paragraph("Date: " + formattedDate + "\n", font));
+            document.add(new Paragraph("--------------------------------\n", font));
         } catch (DocumentException e) {
             e.printStackTrace();
         }
@@ -102,7 +113,7 @@ public class ReceiptPrintService {
             try {
                 document.add(new Paragraph(lineItem, font));
                 document.add(new Paragraph(lineTotal, font));
-                document.add(new Paragraph("---------------------------\n", font));
+                document.add(new Paragraph("--------------------------------\n", font));
             } catch (DocumentException e) {
                 e.printStackTrace();
             }
@@ -111,7 +122,7 @@ public class ReceiptPrintService {
         // Grand Total
         try {
             document.add(new Paragraph("Grand Total: $" + String.format("%.2f", grandTotal) + "\n", boldFont));
-            document.add(new Paragraph("---------------------------\n", font));
+            document.add(new Paragraph("--------------------------------\n", font));
             document.add(new Paragraph("Thank you for shopping!\n", font));
         } catch (DocumentException e) {
             e.printStackTrace();
