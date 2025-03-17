@@ -32,13 +32,14 @@ public class ReceiptPrintController {
     private final ReceiptPrintService receiptPrintService;
     @GetMapping("/receipt/{cartId}")
     public ResponseEntity<byte[]> printReceipt(@PathVariable Long cartId) {
-    String receiptImagePath = receiptPrintService.getReceipt(cartId);
+        String receiptImagePath = receiptPrintService.getReceipt(cartId);
 
         try {
             File file = new File("receipt.png");
             byte[] imageBytes = Files.readAllBytes(file.toPath());
 
             return ResponseEntity.ok()
+                    .header("Content-Disposition", "inline; filename=\"receipt.png\"")
                     .contentType(MediaType.IMAGE_PNG)
                     .body(imageBytes);
         } catch (IOException e) {
@@ -46,6 +47,5 @@ public class ReceiptPrintController {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
         }
     }
-
 
 }

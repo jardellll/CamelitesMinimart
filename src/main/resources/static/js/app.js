@@ -346,6 +346,49 @@ async function completeSale(){
     }
 }
 
+async function printReceipt() {
+    try {
+        const response = await fetch(`${BASE_URL}/print/receipt/${cartId}`, {
+            method: "GET",
+            headers: {
+                "Content-Type": "application/json"
+            },
+        });
+
+        if (!response.ok) {
+            throw new Error("Could not fetch receipt");
+        }
+
+        // Convert response to Blob (image file)
+        const blob = await response.blob();
+        const imageUrl = URL.createObjectURL(blob);
+
+        // Open new print window
+        const printWindow = window.open('', '_blank');
+        printWindow.document.write(`
+            <html>
+                <head>
+                    <title>Receipt</title>
+                    <style>
+                        @page { size: auto; margin: 0; }
+                        body { margin: 0; text-align: center; }
+                        img { width: 100%; max-width: 80mm; } /* Ensure correct thermal printer width */
+                    </style>
+                </head>
+                <body>
+                    <img id="receipt-img" src="${imageUrl}" onload="window.print(); window.close();" />
+                </body>
+            </html>
+        `);
+        printWindow.document.close();
+
+    } catch (error) {
+        console.error(error);
+    }
+}
+
+
+
 async function login(event){
 
     event.preventDefault();
