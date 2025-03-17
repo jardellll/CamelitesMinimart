@@ -372,7 +372,7 @@ async function printReceipt() {
                     <style>
                         @page { size: auto; margin: 0; }
                         body { margin: 0; text-align: center; }
-                        img { width: 100%; max-width: 80mm; } /* Ensure correct thermal printer width */
+                        img { width: 100%; max-width: 80mm; height: auto; display: block; }
                     </style>
                 </head>
                 <body>
