@@ -16,6 +16,8 @@ import org.springframework.stereotype.Service;
 
 import org.apache.pdfbox.pdmodel.PDDocument;
 import org.apache.pdfbox.rendering.PDFRenderer;
+
+import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
@@ -39,6 +41,7 @@ import java.io.File;
 import java.io.IOException;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -134,17 +137,49 @@ public class ReceiptPrintService {
     }
 
     private BufferedImage convertPdfToImage(byte[] pdfBytes) {
-        try {
-            PDDocument document = PDDocument.load(pdfBytes);
-            PDFRenderer renderer = new PDFRenderer(document);
-            BufferedImage image = renderer.renderImageWithDPI(0, 300); // High DPI for better quality
-            document.close();
-            return image;
-        } catch (IOException e) {
-            e.printStackTrace();
+    try {
+        PDDocument document = PDDocument.load(pdfBytes);
+        PDFRenderer renderer = new PDFRenderer(document);
+
+        // Get total number of pages in case of multiple pages
+        int pageCount = document.getNumberOfPages();
+        List<BufferedImage> images = new ArrayList<>();
+
+        for (int i = 0; i < pageCount; i++) {
+            BufferedImage image = renderer.renderImageWithDPI(i, 300); // High DPI for better quality
+            images.add(image);
         }
-            return null;
+        document.close();
+
+        // If multiple pages, merge images into one long image
+        if (images.size() > 1) {
+            return mergeImages(images);
+        } else {
+            return images.get(0);
+        }
+    } catch (IOException e) {
+        e.printStackTrace();
     }
+    return null;
+}
+
+// Merging images vertically
+private BufferedImage mergeImages(List<BufferedImage> images) {
+    int width = images.get(0).getWidth();
+    int totalHeight = images.stream().mapToInt(BufferedImage::getHeight).sum();
+
+    BufferedImage combined = new BufferedImage(width, totalHeight, BufferedImage.TYPE_INT_ARGB);
+    Graphics2D g2d = combined.createGraphics();
+    
+    int y = 0;
+    for (BufferedImage img : images) {
+        g2d.drawImage(img, 0, y, null);
+        y += img.getHeight();
+    }
+    g2d.dispose();
+
+    return combined;
+}
     private String saveImageAndGetURL(BufferedImage image) {
     try {
         File outputFile = new File("receipt.png");
