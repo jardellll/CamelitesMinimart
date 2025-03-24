@@ -24,9 +24,9 @@
         <div class="row">
             <div class="col-8 d-flex flex-column" style="height: 100vh;">
                 <h1 class="text-center my-4">Stock</h1>
-                <input type="text" class="form-control mb-3" id="productSearch" placeholder="Search products..." onkeyup="filterProducts()">
+                <input type="text" class="form-control mb-3" id="stockSearch" placeholder="Search products..." onkeyup="filterProducts('stockList','stockSearch')">
                 <div class="overflow-auto border rounded p-3 bg-light flex-grow-1">
-                    <ul class="list-group" id="productList">
+                    <ul class="list-group" id="stockList">
                         <li class="list-group-item" th:each="item : ${stock}">
                             <p><span th:text="${item.name}" class="product-name"></span> ID: <span th:attr="data-product-id=${item.productId}" th:text="${item.productId}"></span></p>
                             <p>Quantity: <span th:text="${item.quantity}"></span> Price: <span th:text="${item.price}"></span></p>
