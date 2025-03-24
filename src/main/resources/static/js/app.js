@@ -682,17 +682,28 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 });
 
-function filterProducts() {
-    let input = document.getElementById('productSearch').value.toLowerCase();
-    let items = document.getElementById('productList').getElementsByTagName('li');
+function filterProducts(listOfItems, item) {
+    let list = document.getElementById(listOfItems);
+    let input = document.getElementById(item);
+
+    if (!list || !input) {
+        console.error(`Element not found: listId=${listOfItems}, inputId=${item}`);
+        return;
+    }
+
+    let searchValue = input.value.toLowerCase();
+    let items = list.getElementsByTagName('li');
 
     for (let i = 0; i < items.length; i++) {
-        let productName = items[i].getElementsByClassName('product-name')[0].innerText.toLowerCase();
-        if (productName.includes(input)) {
-            items[i].style.display = "";
-        } else {
-            items[i].style.display = "none";
+        let nameElement = items[i].getElementsByClassName('product-name')[0];
+
+        if (!nameElement) {  
+            console.warn(`No .product-name found in item #${i}`, items[i]); // Debugging
+            continue; // Skip this item to prevent errors
         }
+
+        let productName = nameElement.innerText.toLowerCase();
+        items[i].style.display = productName.includes(searchValue) ? "" : "none";
     }
 }
 

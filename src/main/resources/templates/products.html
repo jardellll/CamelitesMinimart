@@ -29,7 +29,7 @@
         <div class="row">
             <div class="col-8 d-flex flex-column" style="height: 100vh;">
                 <h1 class="text-center my-4">Full List of Products</h1>
-                <input type="text" class="form-control mb-3" id="productSearch" placeholder="Search products..." onkeyup="filterProducts()">
+                <input type="text" class="form-control mb-3" id="productSearch" placeholder="Search products..." onkeyup="filterProducts('productList', 'productSearch')">
                 <div class="overflow-auto border rounded p-3 bg-light flex-grow-1">
                     <ul class="list-group" id="productList">
                         <li class="list-group-item" th:each="item : ${productList}">
