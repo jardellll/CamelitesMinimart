@@ -20,7 +20,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.store.CamelitesMinimart.service.SalesReportService;
-
+import com.store.CamelitesMinimart.SaleResponse;
 import com.store.CamelitesMinimart.service.SaleService;
 
 import lombok.RequiredArgsConstructor;
@@ -34,9 +34,9 @@ public class SaleController {
     private final SaleService saleService;
     private final SalesReportService salesReportService;
 
-    @PostMapping("/completeSale/{cartid}/{cash}")
-    public ResponseEntity<Double> completeSale(@PathVariable Long cartid, @PathVariable Double cash, @RequestHeader Long userId){
-        return ResponseEntity.ok().body(saleService.completeSale(cartid, cash, userId));
+    @PostMapping("/completeSale/{cartid}/{cash}/{tranId}")
+    public ResponseEntity<SaleResponse> completeSale(@PathVariable Long cartid, @PathVariable Double cash, @RequestHeader Long userId, @PathVariable String tranId){
+        return ResponseEntity.ok().body(saleService.completeSale(cartid, cash, userId, tranId));
     }
 
     @GetMapping("/generate/dayly/report/{userId}/{reportDate}")

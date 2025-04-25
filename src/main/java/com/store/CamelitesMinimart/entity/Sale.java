@@ -1,4 +1,5 @@
 package com.store.CamelitesMinimart.entity;
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -23,4 +24,6 @@ public class Sale {
     private double total;
     private double cash;
     private double change;
+    @Column(name = "tran_id")
+    private String tranId;
 }
