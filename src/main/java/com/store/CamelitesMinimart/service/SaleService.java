@@ -2,6 +2,7 @@ package com.store.CamelitesMinimart.service;
 
 import org.springframework.stereotype.Service;
 
+import com.store.CamelitesMinimart.SaleResponse;
 import com.store.CamelitesMinimart.entity.CartItems;
 import com.store.CamelitesMinimart.entity.Product;
 import com.store.CamelitesMinimart.entity.Sale;
@@ -33,6 +34,14 @@ public class SaleService {
         return null;
     }
 
+    public Sale getSaleByTranId(String tranId){
+        Optional<Sale> optionalSale = saleRepo.findByTranId(tranId);
+        if (optionalSale.isPresent()){
+            return optionalSale.get();
+        }
+        return null;
+    }
+
     public Sale saveSale (Sale sale){
         Sale savedSale = saleRepo.save(sale);
         return savedSale;
@@ -42,7 +51,8 @@ public class SaleService {
         saleRepo.deleteById(id);
     }
 
-    public Double completeSale(Long CartId, Double cash, Long userId){
+    public SaleResponse completeSale(Long CartId, Double cash, Long userId, String tranId){
+        SaleResponse saleResponse = new SaleResponse();
         Double total = cartItemsService.checkout(CartId);
 
         if (cash == 0.0){
@@ -50,7 +60,7 @@ public class SaleService {
         }
         double change = cash - total;
 
-
+        saleResponse.setChange(change);
         Sale sale = new Sale();
 
         sale.setCart_id(CartId);
@@ -58,6 +68,7 @@ public class SaleService {
         sale.setTotal(total);
         sale.setCash(cash);
         sale.setChange(change);
+        sale.setTranId(tranId);
         List<CartItems> items = cartItemsService.getCartItems(CartId);
         for (int i=0; i< items.size(); i++){
             Long productId = items.get(i).getProduct_id();
@@ -70,6 +81,30 @@ public class SaleService {
 
         saleRepo.save(sale);
 
-        return change;
+        int retries = 5;
+        int waitMs = 500;
+        boolean confirmed = false;
+
+        for (int i = 0; i < retries; i++) {
+            if (getSaleByTranId(tranId) != null) {
+                confirmed = true;
+                saleResponse.setVerified(true);
+                break;
+            }
+            try {
+                Thread.sleep(waitMs); // wait and try again
+            } catch (InterruptedException e) {
+                Thread.currentThread().interrupt();
+                break;
+            }
+        }
+
+        if (!confirmed) {
+            saleResponse.setVerified(false);
+            System.err.println("Transaction failed to confirm in DB: tranId = " + tranId + " total was: "+total+" change was "+change+" CartId was "+ CartId);
+
+        }
+
+        return saleResponse;
     }
 }

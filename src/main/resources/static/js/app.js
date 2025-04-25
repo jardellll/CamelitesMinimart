@@ -314,13 +314,14 @@ async function getCartItems() {
 
 async function completeSale(){
     const userIdForSale = sessionStorage.getItem("userId") || "2";
+    const tranId = crypto.randomUUID();
     let cashValue = cash.value;
     if (cashValue === ""){
         cashValue = 0.0
     }
     try {
         const saleResponse = await fetch(
-            `${BASE_URL}/sale/completeSale/${cartId}/${cashValue}`,
+            `${BASE_URL}/sale/completeSale/${cartId}/${cashValue}/${tranId}`,
             {
                 method: "POST",
                 headers: {
@@ -335,7 +336,7 @@ async function completeSale(){
         }
         const saleData = await saleResponse.json();
         console.log(saleData);
-        change = saleData;
+        change = saleData.change;
         console.log(change);
 
         totalChangeElement = document.getElementById("change-value");
