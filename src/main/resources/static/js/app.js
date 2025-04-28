@@ -683,6 +683,7 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 });
 
+
 function filterProducts(listOfItems, item) {
     let list = document.getElementById(listOfItems);
     let input = document.getElementById(item);
