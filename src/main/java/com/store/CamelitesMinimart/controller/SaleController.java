@@ -75,4 +75,41 @@ public class SaleController {
                 .body(pdfBytes);
     }
 
+    @GetMapping("/generate/summary/report/{userId}/{startDate}/{endDate}")
+    public ResponseEntity<byte[]> getSalesReport(@PathVariable Long userId, @PathVariable String startDate,  @PathVariable String endDate) {
+        
+        LocalDate startDateFormatted = LocalDate.parse(startDate, DateTimeFormatter.ISO_LOCAL_DATE);
+        LocalDate endDateFormatted = LocalDate.parse(endDate, DateTimeFormatter.ISO_LOCAL_DATE);
+        ZoneId zoneId = ZoneId.of("America/New_York");
+        //LocalDate today = LocalDate.now(zoneId);
+        //LocalDate today = LocalDate.now();
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("ddMMMyyyy");
+        String repStartDate = startDateFormatted.format(formatter).toUpperCase();
+        String repEndDate = endDateFormatted.format(formatter).toUpperCase();
+
+        // Get start and end timestamp for today's date with the required timezone and format
+        //ZoneId zoneId = ZoneId.of("America/New_York"); // Adjust the timezone as needed (EST or EDT)
+        ZonedDateTime startZonedDateTime = startDateFormatted.atStartOfDay(zoneId); // 00:00:00 with time zone
+        ZonedDateTime endZonedDateTime = endDateFormatted.atTime(23, 59, 59, 999999999).atZone(zoneId); // 23:59:59 with time zone
+
+        // Format the ZonedDateTime to match the required format "2025-02-22 17:10:50.380914-04"
+        DateTimeFormatter timestampFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss.SSSSSSXXX");
+        String formattedStartDate = startZonedDateTime.format(timestampFormatter);
+        String formattedEndDate = endZonedDateTime.format(timestampFormatter);
+
+        // Generate the PDF using the service
+        byte[] pdfBytes = salesReportService.getSummaryReport(formattedStartDate, formattedEndDate, userId);
+
+        // Customize the filename
+        String fileName = "SummarySalesReportBetween"+repStartDate+"and"+repEndDate+".pdf";
+
+        // Set the content disposition and the content type
+        HttpHeaders headers = new HttpHeaders();
+        headers.add(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=" + fileName);
+        headers.add(HttpHeaders.CONTENT_TYPE, "application/pdf");
+
+        return ResponseEntity.ok()
+                .headers(headers)
+                .body(pdfBytes);
+    }
 }
