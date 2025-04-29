@@ -53,7 +53,38 @@ public class SalesReportService {
         ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
         try {
             System.out.println("Records Retrieved: " + viewData.size());
-            generatePdf(viewData, totalSum, byteArrayOutputStream);
+            generateDaySalesReportPdf(viewData, totalSum, byteArrayOutputStream);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return byteArrayOutputStream.toByteArray();
+    
+    }
+    // do I want create a view that already sums up sales by the day or use the query to group it that way?? Should I lump in all id's or separate by id?
+    //think I have separating it by id be something that is just added to the query if needed but
+    public byte[] getSummaryReport(String startDate, String endDate, Long userId){
+        String sql = "SELECT * FROM total_sales_by_day WHERE day BETWEEN CAST(? AS timestamp with time zone) AND CAST(? AS timestamp with time zone)";
+        System.out.println("start date: " + startDate);
+        System.out.println("end date: " + endDate);
+        long startTime = System.currentTimeMillis();
+        List<Map<String, Object>> viewData= jdbcTemplate.queryForList(sql, startDate, endDate);
+        long endTime = System.currentTimeMillis();
+        System.out.println("Query Execution Time: " + (endTime - startTime) + "ms");    
+
+        System.out.println("Records Retrieved: " + viewData.size());
+        for (Map<String, Object> row : viewData) {
+            System.out.println(row);
+        }
+
+
+        double totalSum = viewData.stream()
+                              .mapToDouble(row -> Double.parseDouble(row.get("total_sales").toString()))
+                              .sum();
+
+        ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
+        try {
+            System.out.println("Records Retrieved: " + viewData.size());
+            generateSummaryReportPdf(viewData, totalSum, byteArrayOutputStream);
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -61,7 +92,7 @@ public class SalesReportService {
     
     }
 
-    private void generatePdf(List<Map<String, Object>> viewData, double totalSum, ByteArrayOutputStream outputStream) throws IOException {
+    private void generateDaySalesReportPdf(List<Map<String, Object>> viewData, double totalSum, ByteArrayOutputStream outputStream) throws IOException {
         // Use iText to generate the PDF based on the data
         Document document = new Document();
         try {
@@ -116,6 +147,58 @@ public class SalesReportService {
             
             
 
+        try {
+            document.add(table);
+        } catch (DocumentException e) {
+            e.printStackTrace();
+        }
+        document.close();
+    }
+
+    private void generateSummaryReportPdf(List<Map<String, Object>> viewData, double totalSum, ByteArrayOutputStream outputStream) throws IOException {
+        // Use iText to generate the PDF based on the data
+        Document document = new Document();
+        try {
+            PdfWriter.getInstance(document, outputStream);
+        } catch (DocumentException e) {
+            e.printStackTrace();
+        }
+        document.open();
+
+        Font headerFont = new Font(Font.FontFamily.HELVETICA, 20, Font.BOLD);
+        Paragraph header = new Paragraph("Camelite's Minimart Total Sales Report", headerFont);
+        header.setAlignment(Element.ALIGN_CENTER);  // Center the header
+        try {
+            document.add(header);
+        } catch (DocumentException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+
+        // Add some spacing between the header and the table
+        try {
+            document.add(new Paragraph(" "));
+        } catch (DocumentException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+
+        // Add the table and content to the PDF
+        PdfPTable table = new PdfPTable(2); // Example, adjust based on your columns
+
+        table.addCell("Date");
+        table.addCell("Total Sales");
+            
+
+
+        for (Map<String, Object> row : viewData) {
+                table.addCell(row.get("day").toString().substring(0, 10));
+                table.addCell(row.get("total_sales").toString());
+                
+        }
+        table.addCell("Total sales for the period:"); 
+        table.addCell(String.format("%.2f", totalSum));
+            
         try {
             document.add(table);
         } catch (DocumentException e) {

@@ -658,6 +658,55 @@ async function generateDailyReport() {
 
 }
 
+async function generateSummaryReport() {
+
+    let startDate = document.getElementById("startDate").value;
+    let endDate = document.getElementById("endDate").value;
+    const userIdForReport = sessionStorage.getItem("userId") || "2";
+    console.log(startDate);
+    console.log(endDate);
+    
+
+    try {
+        const summaryReportResponse = await fetch(`${BASE_URL}/sale/generate/summary/report/${userIdForReport}/${startDate}/${endDate}`, {
+            method: "GET", 
+            headers: {
+                "Content-Type": "application/json",
+            },
+        });
+
+        if (!summaryReportResponse.ok) {
+            throw new Error("could not fetch");
+        }
+        console.log("Success:", summaryReportResponse);
+        const blob = await summaryReportResponse.blob();
+        try{
+            if (blob.size === 0) {
+                alert("The report is empty or failed to generate.");
+                return;
+            }
+            
+            let url = window.URL.createObjectURL(blob);
+            let a = document.createElement("a");
+            a.href = url;
+            a.download = `SummarySalesReport_${startDate}_${endDate}.pdf`;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            window.URL.revokeObjectURL(url);
+        }
+        catch (error) {
+            console.error("Error generating report:", error);
+            alert("Failed to generate report. Please try again.");
+        }
+
+    } catch (error) {
+        console.error(error);
+    }
+
+
+}
+
 document.addEventListener("DOMContentLoaded", ()=>{
         const isAuthenticated = sessionStorage.getItem("isAuthenticated");
     
@@ -751,9 +800,15 @@ document.addEventListener("DOMContentLoaded", function () {
     }
 });
 document.addEventListener("DOMContentLoaded", function () {
-    let generateReportBtn = document.getElementById("reportGenerateBtn");
+    let generateReportBtn = document.getElementById("dailyReportGenerateBtn");
     if (generateReportBtn) {
-        document.getElementById("reportGenerateBtn").addEventListener("click", generateDailyReport);
+        document.getElementById("dailyReportGenerateBtn").addEventListener("click", generateDailyReport);
+    }
+});
+document.addEventListener("DOMContentLoaded", function () {
+    let generateReportBtn = document.getElementById("totalSalesReportGenerateBtn");
+    if (generateReportBtn) {
+        document.getElementById("totalSalesReportGenerateBtn").addEventListener("click", generateSummaryReport);
     }
 });
 document.addEventListener("DOMContentLoaded", function () {
