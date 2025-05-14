@@ -6,6 +6,30 @@ let username = document.getElementById("username")
 let password = document.getElementById("password")
 let change = 0.00
 let authenticated = false;
+
+class Mutex {
+    constructor() {
+        this.locked = false;
+        this.waiters = [];
+    }
+
+    async acquire() {
+        while (this.locked) {
+            await new Promise(resolve => this.waiters.push(resolve));
+        }
+        this.locked = true;
+    }
+
+    release() {
+        this.locked = false;
+        if (this.waiters.length > 0) {
+            const resolve = this.waiters.shift();
+            resolve();
+        }
+    }
+}
+
+const cartCreationLock = new Mutex();
 // document.getElementById("newCart").addEventListener("click", function () {
 //   fetch('${BASE_URL}/cart/newCart", {
 //     method: "POST",
@@ -26,11 +50,12 @@ let authenticated = false;
 // });
 const BASE_URL = window.location.origin;
 async function addToCart(product_id, quantityId) {
-    let isCreatingCart = false;
+    // let isCreatingCart = false;
     const quantityElement = document.getElementById(quantityId);
     const quantity = quantityElement.value;
-    if (!activeCart && !isCreatingCart) {
-        isCreatingCart = true;
+    await cartCreationLock.acquire();
+    if (!activeCart) {
+        // isCreatingCart = true;
         try {
             const response = await fetch(`${BASE_URL}/cart/newCart`, {
                 method: "POST",
@@ -49,7 +74,8 @@ async function addToCart(product_id, quantityId) {
             console.error("Error:", error);
             alert("Error creating cart");
         } finally {
-            isCreatingCart = false;
+            // isCreatingCart = false;
+            cartCreationLock.release();
         }
     }
 
@@ -86,7 +112,7 @@ async function addToCart(product_id, quantityId) {
 }
 //const barcodeQuantityMap = {};
 async function addToCartWBarcode(barcode) {
-    let isCreatingCart = false;
+    // let isCreatingCart = false;
     if (!barcode.trim()) return;
     // const quantityElement = document.getElementById(quantityId);
     // const quantity = quantityElement.value;
@@ -96,9 +122,9 @@ async function addToCartWBarcode(barcode) {
     // } else {
     //     barcodeQuantityMap[barcode] = 1;
     // }
-
-    if (!activeCart && !isCreatingCart) {
-        isCreatingCart = true;
+    await cartCreationLock.acquire();
+    if (!activeCart) {
+        // isCreatingCart = true;
         try {
             const response = await fetch(`${BASE_URL}/cart/newCart`, {
                 method: "POST",
@@ -117,7 +143,8 @@ async function addToCartWBarcode(barcode) {
             console.error("Error:", error);
             alert("Error creating cart");
         } finally {
-            isCreatingCart = false;
+            // isCreatingCart = false;
+            cartCreationLock.release();
         }
     }
 
@@ -823,6 +850,18 @@ document.addEventListener("DOMContentLoaded", function () {
 });
 
 document.addEventListener("DOMContentLoaded", function () {
+    // Set up barcode input with debounced handler
+    const barcodeInput = document.getElementById("barcodeSearch");
+    if (barcodeInput) {
+        const debouncedBarcodeHandler = debounce(addToCartWBarcode, 200);
+        barcodeInput.addEventListener("keyup", function () {
+            debouncedBarcodeHandler(this.value);
+        });
+    }
+});
+
+
+document.addEventListener("DOMContentLoaded", function () {
     const editButtons = document.querySelectorAll(".edit-product-btn");
 
     if (editButtons.length === 0) {
@@ -857,6 +896,15 @@ document.addEventListener("DOMContentLoaded", function () {
         });
     });
 });
+
+
+function debounce(func, delay) {
+    let timeoutId;
+    return function(...args) {
+        clearTimeout(timeoutId);
+        timeoutId = setTimeout(() => func.apply(this, args), delay);
+    };
+}
 // function handleSubmit(event) {
 //     event.preventDefault(); // Prevent form from submitting in the usual way
 
