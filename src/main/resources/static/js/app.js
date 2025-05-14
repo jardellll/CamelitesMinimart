@@ -52,9 +52,10 @@ const BASE_URL = window.location.origin;
 async function addToCart(product_id, quantityId) {
     // let isCreatingCart = false;
     const quantityElement = document.getElementById(quantityId);
-    const quantity = quantityElement.value;
-    await cartCreationLock.acquire();
+        const quantity = quantityElement.value;
     if (!activeCart) {
+        
+        await cartCreationLock.acquire();
         // isCreatingCart = true;
         try {
             const response = await fetch(`${BASE_URL}/cart/newCart`, {
@@ -122,8 +123,9 @@ async function addToCartWBarcode(barcode) {
     // } else {
     //     barcodeQuantityMap[barcode] = 1;
     // }
-    await cartCreationLock.acquire();
+    
     if (!activeCart) {
+        await cartCreationLock.acquire();
         // isCreatingCart = true;
         try {
             const response = await fetch(`${BASE_URL}/cart/newCart`, {
