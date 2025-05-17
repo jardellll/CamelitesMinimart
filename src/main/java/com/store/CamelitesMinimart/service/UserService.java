@@ -55,9 +55,9 @@ public class UserService {
             // String usernameFromReq = loginRequest.getUsername();
             // String passFromReq= loginRequest.getPassword();
 
-            System.out.println("Checking user: " + user.getUsername());
-            System.out.println("Password from DB: " + user.getPassword());
-            System.out.println("Password from request: " + password);
+            // System.out.println("Checking user: " + user.getUsername());
+            // System.out.println("Password from DB: " + user.getPassword());
+            // System.out.println("Password from request: " + password);
             //     }
                 
             // }
