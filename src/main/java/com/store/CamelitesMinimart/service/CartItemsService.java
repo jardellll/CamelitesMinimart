@@ -42,10 +42,24 @@ public class CartItemsService {
         if (p != null){
             Long id = p.getId();
 
-            CartItems cartItem = new CartItems(barcodeItem.getCart_id(), id, barcodeItem.getQuantity());
-            CartItems savedCartItems = cartItemsRepo.save(cartItem);
+            //get the items in the cart and check if the one just scanned is in there
 
-            return savedCartItems;
+            List<CartItems> itemsInCart = getCartItems(barcodeItem.getCart_id());
+            
+            Optional<CartItems> existingItemOpt = itemsInCart.stream()
+                .filter(item -> item.getProduct_id().equals(id))
+                .findFirst();
+
+            CartItems cartItem;
+
+            if (existingItemOpt.isPresent()) {
+                CartItems existingItem = existingItemOpt.get();
+                cartItem = new CartItems(barcodeItem.getCart_id(), id, existingItem.getQuantity() + 1);
+            } else {
+                cartItem = new CartItems(barcodeItem.getCart_id(), id, barcodeItem.getQuantity());
+            }
+
+            return cartItemsRepo.save(cartItem);
         }
         //cartItem.getCart_id(),cartItem.getProduct_id());
         return null;

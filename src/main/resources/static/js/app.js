@@ -256,6 +256,7 @@ async function getCartItems() {
     
     const products = await Promise.all(productPromises);
     products.forEach(item => {
+        const quantityInputId = `quantityInput-${item.product_id}`;
         const rowDiv = document.createElement("div");
         rowDiv.classList.add("row", "mb-2");
         //rowDiv.innerHTML = `<div class="col-4">${item.productName}</div>`;
@@ -283,10 +284,10 @@ async function getCartItems() {
                     </button>
                     <ul class="dropdown-menu p-3" style="min-width: 200px;">
                         <li>
-                            <input type="number" id="quantityInput" class="form-control" min="1" placeholder="Enter quantity" onkeydown="event.stopPropagation();">
+                            <input type="number" id="${quantityInputId}" class="form-control" min="1" placeholder="Enter quantity" onkeydown="event.stopPropagation();">
                         </li>
                         <li>
-                            <button class="btn btn-success mt-2 w-50" onclick="addToCart('${item.product_id}', 'quantityInput')"></button>
+                            <button class="btn btn-success mt-2 w-50" onclick="addToCart('${item.product_id}', '${quantityInputId}')">Update</button>
                         </li>
                     </ul>
                 </div>
