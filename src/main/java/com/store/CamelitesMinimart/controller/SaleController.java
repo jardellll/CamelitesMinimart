@@ -7,6 +7,8 @@ import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
@@ -22,6 +24,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.store.CamelitesMinimart.service.SalesReportService;
 import com.store.CamelitesMinimart.SaleResponse;
 import com.store.CamelitesMinimart.service.SaleService;
+import lombok.extern.slf4j.Slf4j;
 
 import lombok.RequiredArgsConstructor;
 
@@ -33,9 +36,13 @@ public class SaleController {
 
     private final SaleService saleService;
     private final SalesReportService salesReportService;
+    // Logger logger = 
+    private static final Logger log =
+        LoggerFactory.getLogger(SaleService.class);
 
     @PostMapping("/completeSale/{cartid}/{cash}/{tranId}")
     public ResponseEntity<SaleResponse> completeSale(@PathVariable Long cartid, @PathVariable Double cash, @RequestHeader Long userId, @PathVariable String tranId){
+        log.info("inside complete sale controller");
         return ResponseEntity.ok().body(saleService.completeSale(cartid, cash, userId, tranId));
     }
 

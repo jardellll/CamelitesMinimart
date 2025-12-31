@@ -1,5 +1,7 @@
 package com.store.CamelitesMinimart.service;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 import com.store.CamelitesMinimart.SaleResponse;
@@ -18,6 +20,8 @@ import java.util.Optional;
 @RequiredArgsConstructor
 @Slf4j
 public class SaleService {
+    private static final Logger log =
+        LoggerFactory.getLogger(SaleService.class);
     private final SaleRepo saleRepo;
     private final CartItemsService cartItemsService;
     private final StockService stockService;
@@ -52,6 +56,7 @@ public class SaleService {
     }
 
     public SaleResponse completeSale(Long CartId, Double cash, Long userId, String tranId){
+        log.info("inside completeSale logic");
         SaleResponse saleResponse = new SaleResponse();
         Double total = cartItemsService.checkout(CartId);
 
